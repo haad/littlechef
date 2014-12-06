@@ -271,7 +271,6 @@ hub.example.com.
 To be able to properly connect to hub.example.com same host should be defined in _ssh-config_. Because final connection
 is made from a hub.example.com any required ssh keys must be available on it or user needs to setup *ssh-agent* forwarding.
 
-
 ### Cooking
 
 Note: Don't cook outside of a kitchen!
