@@ -168,10 +168,13 @@ def _configure_fabric_for_platform(platform):
         env.shell = "/bin/sh -c"
 
 
-def _node_runner():
+def _node_runner(node_data=None):
     """This is only used by node so that we can execute in parallel"""
     env.host_string = lib.get_env_host_string()
-    node = lib.get_node(env.host_string)
+    if node_data:
+        node = node_data
+    else:
+        node = lib.get_node(env.host_string)
 
     _configure_fabric_for_platform(node.get("platform"))
 
@@ -196,8 +199,9 @@ def _node_runner():
         else:
             lib.print_header("Configuring {0}".format(env.host_string))
             if env.autodeploy_chef and not chef.chef_test():
-                deploy_chef(ask="no")
-                chef.sync_node(node)
+                deploy_chef(method="omnibus")
+            chef.sync_node(node)
+
 
 def deploy_chef(ask="yes", version="11"):
     """Install chef-solo on a node"""
@@ -241,16 +245,22 @@ def recipe(recipe):
 
     """
     env.host_string = lib.get_env_host_string()
-    lib.print_header(
-        "Applying recipe '{0}' on node {1}".format(recipe, env.host_string))
 
     # Create configuration and sync node
     data = lib.get_node(env.host_string)
     data["run_list"] = ["recipe[{0}]".format(recipe)]
+<<<<<<< HEAD
     if not __testing__:
         if env.autodeploy_chef and not chef.chef_test():
                 deploy_chef(ask="no")
         chef.sync_node(data)
+=======
+
+    lib.print_header(
+        "Applying recipe '{0}' on node {1}".format(recipe, env.host_string))
+
+    _node_runner(node_data=data)
+>>>>>>> upstream_chef_solo_proxy
 
 
 def role(role):
@@ -260,16 +270,23 @@ def role(role):
 
     """
     env.host_string = lib.get_env_host_string()
-    lib.print_header(
-        "Applying role '{0}' to {1}".format(role, env.host_string))
 
     # Now create configuration and sync node
     data = lib.get_node(env.host_string)
     data["run_list"] = ["role[{0}]".format(role)]
+<<<<<<< HEAD
     if not __testing__:
         if env.autodeploy_chef and not chef.chef_test():
                 deploy_chef(ask="no")
         chef.sync_node(data)
+=======
+
+    lib.print_header(
+        "Applying role '{0}' to {1}".format(role, env.host_string))
+
+    _node_runner(node_data=data)
+
+>>>>>>> upstream_chef_solo_proxy
 
 
 def ssh(name):
