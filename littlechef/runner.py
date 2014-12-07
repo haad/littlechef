@@ -193,6 +193,7 @@ def _node_runner(node_data=None):
     else:
         https_proxy = env.https_proxy
 
+    print("{0} - {1} - {2}".format(https_proxy, http_proxy, gateway))
     with settings(https_proxy=https_proxy, http_proxy=http_proxy, gateway=gateway):
         if __testing__:
             print "TEST: would now configure {0}".format(env.host_string)
@@ -249,18 +250,11 @@ def recipe(recipe):
     # Create configuration and sync node
     data = lib.get_node(env.host_string)
     data["run_list"] = ["recipe[{0}]".format(recipe)]
-<<<<<<< HEAD
-    if not __testing__:
-        if env.autodeploy_chef and not chef.chef_test():
-                deploy_chef(ask="no")
-        chef.sync_node(data)
-=======
 
     lib.print_header(
         "Applying recipe '{0}' on node {1}".format(recipe, env.host_string))
 
     _node_runner(node_data=data)
->>>>>>> upstream_chef_solo_proxy
 
 
 def role(role):
@@ -274,19 +268,11 @@ def role(role):
     # Now create configuration and sync node
     data = lib.get_node(env.host_string)
     data["run_list"] = ["role[{0}]".format(role)]
-<<<<<<< HEAD
-    if not __testing__:
-        if env.autodeploy_chef and not chef.chef_test():
-                deploy_chef(ask="no")
-        chef.sync_node(data)
-=======
 
     lib.print_header(
         "Applying role '{0}' to {1}".format(role, env.host_string))
 
     _node_runner(node_data=data)
-
->>>>>>> upstream_chef_solo_proxy
 
 
 def ssh(name):
