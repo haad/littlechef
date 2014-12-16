@@ -377,11 +377,15 @@ def ensure_berksfile_cookbooks_are_installed():
     if run_vendor:
         if cookbooks_dir_exists:
             shutil.rmtree(env.berksfile_cookbooks_directory)
+        try:
+            p = subprocess.Popen(['berks', 'vendor', env.berksfile_cookbooks_directory],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
+            stdout, stderr = p.communicate()
+        except OSError:
+            print "There is no berks binary in your path and you ask for it. Maybe you have forgot to install it or you use rvm ?"
+            exit(1)
 
-        p = subprocess.Popen(['berks', 'vendor', env.berksfile_cookbooks_directory],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate()
         # TODO: output better
         if env.verbose or p.returncode:
             print stdout, stderr
