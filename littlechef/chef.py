@@ -141,10 +141,6 @@ def _synchronize_node(configfile, node):
     for cookbook_path in cookbook_paths:
         paths_to_sync.append('./{0}'.format(cookbook_path))
 
-    # Add berksfile directory to sync_list
-    if env.berksfile:
-        paths_to_sync.append(env.berksfile_cookbooks_directory)
-
     if env.loglevel is "debug":
         extra_opts=""
 
@@ -165,6 +161,17 @@ def _synchronize_node(configfile, node):
         extra_opts=extra_opts,
         ssh_opts=ssh_opts
     )
+
+    # Add berksfile directory to sync_list
+    if env.berksfile:
+        rsync_project(
+                env.node_work_path,
+                env.berksfile_cookbooks_directory,
+                exclude=('*.svn', '.bzr*', '.git*', '.hg*'),
+                delete=True,
+                extra_opts=extra_opts,
+                ssh_opts=ssh_opts
+        )
 
     if env.sync_packages_dest_dir and env.sync_packages_local_dir:
       print("Uploading packages from {0} to remote server {2} directory "
