@@ -149,8 +149,13 @@ def _synchronize_node(configfile, node):
         extra_opts=""
 
     if env.gateway:
-        ssh_key_file = '.ssh/'+os.path.basename(' '.join(env.ssh_config.lookup(env.host_string)['identityfile']))
-        ssh_opts+=" "+env.gateway+" ssh -o StrictHostKeyChecking=no -i "+ssh_key_file
+        try:
+            gateway_name = env.gateway.split('@')[-1]
+            ssh_key_file = '-A -i .ssh/'+os.path.basename(' '.join(env.ssh_config.lookup(gateway_name)['identityfile']))
+        except KeyError:
+            ssh_key_file = '-A'
+
+        ssh_opts+=" "+env.gateway+" ssh -o StrictHostKeyChecking=no "+ssh_key_file
 
     rsync_project(
         env.node_work_path,

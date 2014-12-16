@@ -193,14 +193,13 @@ def _node_runner(node_data=None):
     else:
         https_proxy = env.https_proxy
 
-    print("{0} - {1} - {2}".format(https_proxy, http_proxy, gateway))
     with settings(https_proxy=https_proxy, http_proxy=http_proxy, gateway=gateway):
         if __testing__:
             print "TEST: would now configure {0}".format(env.host_string)
         else:
             lib.print_header("Configuring {0}".format(env.host_string))
             if env.autodeploy_chef and not chef.chef_test():
-                deploy_chef(method="omnibus")
+                deploy_chef(ask="no")
             chef.sync_node(node)
 
 
@@ -273,6 +272,7 @@ def role(role):
         "Applying role '{0}' to {1}".format(role, env.host_string))
 
     _node_runner(node_data=data)
+
 
 
 def ssh(name):
